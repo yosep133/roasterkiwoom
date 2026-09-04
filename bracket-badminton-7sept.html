@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bracket Bulu Tangkis Ganda — 7 September</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5E8;
+    --paper:#FFFCF5;
+    --red:#D6262A;
+    --red-dark:#7A1620;
+    --gold:#F2A93C;
+    --gold-dark:#B9791E;
+    --ink:#241E19;
+    --ink-soft:#5A5048;
+    --line: rgba(36,30,25,0.14);
+    --green:#2F7A4F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--cream);
+    background-image: radial-gradient(circle at 1px 1px, rgba(36,30,25,0.06) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);font-family:'Plus Jakarta Sans', sans-serif;padding-bottom:60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 18px;}
+  .hero{background:linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);color:#fff;padding:30px 0 34px;}
+  .eyebrow{font-family:'Space Mono', monospace;letter-spacing:.18em;font-size:12px;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .hero h1{font-family:'Archivo Black', sans-serif;font-size:clamp(26px,5.5vw,42px);line-height:1.05;margin:8px 0 6px;text-transform:uppercase;}
+  .hero p{margin:0;color:#F6DCCB;font-size:14.5px;max-width:560px;}
+  main{padding-top:24px;}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:20px;}
+  .card h2{font-family:'Archivo Black', sans-serif;font-size:19px;text-transform:uppercase;margin:0 0 6px;color:var(--red-dark);}
+  .muted{color:var(--ink-soft);font-size:13.5px;margin-bottom:14px;}
+  textarea{
+    width:100%;min-height:280px;padding:12px;border-radius:10px;border:1.5px solid var(--line);
+    font-family:'Space Mono',monospace;font-size:13.5px;line-height:1.6;resize:vertical;background:#fff;
+  }
+  textarea:focus{outline:2px solid var(--gold);border-color:var(--gold);}
+  .btn{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;padding:11px 20px;border-radius:10px;border:none;cursor:pointer;background:var(--red);color:#fff;}
+  .btn:hover{background:var(--red-dark);}
+  .btn.gold{background:var(--gold);color:var(--red-dark);}
+  .btn.gold:hover{background:var(--gold-dark);color:#fff;}
+  .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink);}
+  .btn.small{padding:6px 11px;font-size:12.5px;}
+  .row-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+  .status-line{font-size:13px;margin-top:10px;}
+  .status-line.ok{color:var(--green);}
+  .status-line.warn{color:var(--red);}
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:14px;}
+  .team-chip{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font-size:13.5px;}
+  .team-chip b{color:var(--gold-dark);}
+  .leftover{border:1.5px dashed var(--red);background:#FFF3EE;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:13.5px;}
+
+  .bracket-scroll{overflow-x:auto;padding-bottom:10px;}
+  .bracket{display:flex;gap:36px;align-items:stretch;min-width:min-content;padding:6px 4px;}
+  .round-col{display:flex;flex-direction:column;justify-content:space-around;gap:20px;min-width:210px;}
+  .round-title{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dark);text-align:center;margin-bottom:6px;font-weight:700;}
+  .bmatch{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:10px 12px;position:relative;}
+  .bmatch .team-line{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px;gap:6px;}
+  .bmatch .team-line.winner{font-weight:800;color:var(--red);}
+  .bmatch .team-line.bye{color:var(--ink-soft);font-style:italic;}
+  .bmatch .divider{height:1px;background:var(--line);margin:2px 0;}
+  .bmatch input.score-input{width:34px;padding:4px;text-align:center;border-radius:6px;border:1.5px solid var(--line);font-family:'Space Mono',monospace;}
+  .bmatch .save-btn{margin-top:6px;width:100%;}
+  .edit-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--ink-soft);padding:0 2px;}
+  .edit-name-row{display:flex;gap:4px;margin:3px 0;}
+  .edit-name-row input{flex:1;padding:4px 6px;font-size:12px;border-radius:6px;border:1.5px solid var(--line);}
+  .champion-banner{text-align:center;padding:28px 20px;border-radius:16px;background:linear-gradient(135deg, var(--gold), var(--red));color:#fff;margin-bottom:20px;}
+  .champion-banner .cup{font-size:36px;}
+  .champion-banner h2{font-family:'Archivo Black',sans-serif;font-size:24px;margin:6px 0 2px;color:#fff;text-transform:uppercase;}
+  .empty-state{text-align:center;padding:36px 20px;color:var(--ink-soft);font-size:14px;}
+  footer{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:26px;font-family:'Space Mono',monospace;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Lomba Susulan — 7 September</div>
+    <h1>Bracket Bulu Tangkis Ganda</h1>
+    <p>Edit daftar pemain kapan aja, klik acak buat bikin tim &amp; bracket otomatis, lalu isi skor tiap match sampai ketemu juaranya.</p>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="card">
+    <h2>Daftar Pemain</h2>
+    <div class="muted">Satu nama per baris. Tambah, hapus, atau perbaiki nama di sini, lalu klik "Simpan Daftar" — perubahan gak akan ngacak ulang tim yang udah dibikin.</div>
+    <textarea id="rosterInput"></textarea>
+    <div class="row-actions">
+      <button class="btn ghost" id="saveRosterBtn">Simpan Daftar</button>
+      <span class="status-line" id="rosterStatus"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Acak Jadi Tim</h2>
+    <div class="muted">Ambil semua nama di daftar pemain, acak, pasangkan 2-2 jadi tim, terus langsung susun bracket sistem gugur.</div>
+    <button class="btn gold" id="shuffleBtn">🎲 Acak Jadi Tim &amp; Buat Bracket</button>
+    <div id="teamsResult"></div>
+  </div>
+
+  <div id="bracketContainer"></div>
+
+  <div class="card">
+    <h2>Reset</h2>
+    <div class="muted">Hapus tim &amp; bracket yang udah dibikin (daftar pemain gak kehapus).</div>
+    <button class="btn ghost" id="resetBracketBtn">Reset Tim &amp; Bracket</button>
+  </div>
+
+</main>
+
+<footer>bracket bulu tangkis ganda — data tersimpan otomatis di browser ini</footer>
+
+<script>
+/* ============================================================
+   DEFAULT ROSTER (dari daftar yang dikasih)
+============================================================ */
+const DEFAULT_ROSTER = [
+  "Wahyu Saputra","Michael Valentino","Sukarno Alatas","Ainur","Ignatius Wahyu",
+  "YOGI MAKMUR SAPUTRA BINTANG","Kevin Yudha Pratama","Amarsjah","Carina",
+  "Andy Habibie Razak","Liza Camelia Suryanata","Muhammad Ripal","Izha Noer Aradha",
+  "Daniel","Nanda Kumala Sari","BUDY","Arif Wijaya","Rizkyani Utami","Rizki Saputra",
+  "Yosep belfridus delang","Kevin Yudha Pratama","Anisa","Nanda Kumala Sari","Affana",
+  "Audi","Akbar","Muhammad Sofwan Hidayah","Iman"
+];
+
+let state = { roster: DEFAULT_ROSTER.slice(), teams: [], leftover: null, bracket: [] };
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/* ============================================================
+   STORAGE
+============================================================ */
+async function getKey(key, fallback){
+  try{
+    const r = await window.storage.get(key, false);
+    if(!r) return fallback;
+    return JSON.parse(r.value);
+  }catch(e){ return fallback; }
+}
+async function setKey(key, value){
+  try{ await window.storage.set(key, JSON.stringify(value), false); }
+  catch(e){ console.error('storage set failed', key, e); alert('Gagal simpan data, coba lagi ya.'); }
+}
+
+async function loadAll(){
+  const [roster, teams, leftover, bracket] = await Promise.all([
+    getKey('roster', null),
+    getKey('teams', []),
+    getKey('leftover', null),
+    getKey('bracket', [])
+  ]);
+  state.roster = roster === null ? DEFAULT_ROSTER.slice() : roster;
+  state.teams = teams;
+  state.leftover = leftover;
+  state.bracket = bracket;
+}
+
+/* ============================================================
+   ROSTER
+============================================================ */
+function renderRoster(){
+  document.getElementById('rosterInput').value = state.roster.join('\n');
+  checkDuplicates();
+}
+
+function checkDuplicates(){
+  const names = state.roster.map(n=>n.trim()).filter(Boolean);
+  const seen = {}, dupes = new Set();
+  names.forEach(n=>{
+    const key = n.toLowerCase();
+    if(seen[key]) dupes.add(n); else seen[key]=true;
+  });
+  const statusEl = document.getElementById('rosterStatus');
+  if(dupes.size > 0){
+    statusEl.className = 'status-line warn';
+    statusEl.textContent = `${names.length} nama tersimpan. ⚠️ Nama ganda: ${[...dupes].join(', ')} — cek dulu apa itu 2 orang beda atau kepencet dobel.`;
+  } else {
+    statusEl.className = 'status-line ok';
+    statusEl.textContent = `${names.length} nama tersimpan.`;
+  }
+}
+
+async function saveRoster(){
+  const lines = document.getElementById('rosterInput').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  state.roster = lines;
+  await setKey('roster', lines);
+  checkDuplicates();
+}
+
+/* ============================================================
+   SHUFFLE -> TEAMS -> BRACKET
+============================================================ */
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function nextPow2(n){ let p=1; while(p<n) p*=2; return p; }
+function seedOrder(n){
+  let result=[1,2];
+  while(result.length<n){
+    const m=result.length*2, next=[];
+    result.forEach(s=>{ next.push(s); next.push(m+1-s); });
+    result=next;
+  }
+  return result;
+}
+
+async function shuffleTeamsAndBuildBracket(){
+  const names = state.roster.map(n=>n.trim()).filter(Boolean);
+  if(names.length < 4){ alert('Minimal 4 pemain (2 tim) buat bikin bracket.'); return; }
+  if(state.bracket.length > 0){
+    if(!confirm('Ini bakal bikin ulang tim & bracket dari awal, skor yang udah diisi bakal hilang. Lanjut?')) return;
+  }
+
+  const shuffled = shuffleArr(names);
+  let leftover = null;
+  let pairPool = shuffled;
+  if(pairPool.length % 2 !== 0){
+    leftover = pairPool[pairPool.length-1];
+    pairPool = pairPool.slice(0, -1);
+  }
+
+  const teams = [];
+  for(let i=0;i<pairPool.length;i+=2){
+    teams.push({ id: uid(), p1: pairPool[i], p2: pairPool[i+1] });
+  }
+
+  const N = teams.length;
+  const bracketSize = nextPow2(N);
+  const order = seedOrder(bracketSize);
+  const slots = order.map(seedNum => seedNum<=N ? teams[seedNum-1].id : null);
+
+  const round1 = [];
+  for(let i=0;i<slots.length;i+=2){
+    const aId = slots[i], bId = slots[i+1];
+    const bye = !aId || !bId;
+    round1.push({ id: uid(), aId, bId, scoreA:null, scoreB:null, played:bye, winnerId: bye ? (aId||bId||null) : null, bye });
+  }
+  const rounds = [round1];
+  let count = round1.length;
+  while(count > 1){
+    count = count/2;
+    const r = [];
+    for(let i=0;i<count;i++) r.push({ id:uid(), aId:null, bId:null, scoreA:null, scoreB:null, played:false, winnerId:null, bye:false });
+    rounds.push(r);
+  }
+  propagateWinners(rounds);
+
+  state.teams = teams;
+  state.leftover = leftover;
+  state.bracket = rounds;
+  await setKey('teams', teams);
+  await setKey('leftover', leftover);
+  await setKey('bracket', rounds);
+  renderAll();
+}
+
+function propagateWinners(rounds){
+  for(let r=0;r<rounds.length-1;r++){
+    rounds[r].forEach((m, idx)=>{
+      if(m.winnerId){
+        const nextMatch = rounds[r+1][Math.floor(idx/2)];
+        if(idx % 2 === 0) nextMatch.aId = m.winnerId; else nextMatch.bId = m.winnerId;
+      }
+    });
+  }
+  for(let r=0;r<rounds.length;r++){
+    rounds[r].forEach(m=>{
+      if(!m.played && (!m.aId || !m.bId) && (m.aId || m.bId)){
+        m.bye = true; m.played = true; m.winnerId = m.aId || m.bId;
+      }
+    });
+  }
+}
+
+async function saveMatchScore(roundIdx, matchId, scoreA, scoreB){
+  if(scoreA === scoreB){ alert('Skor gak boleh seri, harus ada pemenang.'); return; }
+  const rounds = state.bracket;
+  const match = rounds[roundIdx].find(m=>m.id===matchId);
+  match.scoreA = scoreA; match.scoreB = scoreB; match.played = true;
+  match.winnerId = scoreA > scoreB ? match.aId : match.bId;
+  propagateWinners(rounds);
+  await setKey('bracket', rounds);
+  renderAll();
+}
+
+async function renameTeam(teamId, p1, p2){
+  const t = state.teams.find(x=>x.id===teamId);
+  if(!t) return;
+  t.p1 = p1.trim() || t.p1;
+  t.p2 = p2.trim() || t.p2;
+  await setKey('teams', state.teams);
+  renderAll();
+}
+
+async function resetBracket(){
+  if(!confirm('Hapus semua tim & bracket? Daftar pemain gak akan kehapus.')) return;
+  state.teams = []; state.leftover = null; state.bracket = [];
+  await setKey('teams', []);
+  await setKey('leftover', null);
+  await setKey('bracket', []);
+  renderAll();
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function teamById(id){ return state.teams.find(t=>t.id===id); }
+function teamLabel(id){
+  if(!id) return 'BYE';
+  const t = teamById(id);
+  return t ? (t.p1 + ' & ' + t.p2) : '(tim dihapus)';
+}
+function escapeHtml(str){
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderTeamsResult(){
+  const el = document.getElementById('teamsResult');
+  if(state.teams.length === 0){ el.innerHTML=''; return; }
+  let html = '<div class="team-grid">' + state.teams.map((t,i)=>`
+    <div class="team-chip"><b>Tim ${i+1}:</b> ${escapeHtml(t.p1)} &amp; ${escapeHtml(t.p2)}</div>
+  `).join('') + '</div>';
+  if(state.leftover){
+    html += `<div class="leftover">⚠️ Jumlah pemain ganjil — <b>${escapeHtml(state.leftover)}</b> belum kebagian pasangan. Tambah 1 nama lagi terus acak ulang, atau pasangkan manual.</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function roundLabel(idx, total){
+  const fromEnd = total-1-idx;
+  if(fromEnd===0) return 'Final';
+  if(fromEnd===1) return 'Semifinal';
+  if(fromEnd===2) return 'Perempat Final';
+  return 'Babak ke-'+(idx+1);
+}
+
+function renderBracket(){
+  const container = document.getElementById('bracketContainer');
+  if(state.bracket.length === 0){
+    container.innerHTML = `<div class="card"><div class="empty-state">Bracket belum dibuat. Isi daftar pemain di atas, terus klik "Acak Jadi Tim & Buat Bracket".</div></div>`;
+    return;
+  }
+  const rounds = state.bracket;
+  const finalMatch = rounds[rounds.length-1][0];
+  let championHtml = '';
+  if(finalMatch.played && finalMatch.winnerId){
+    championHtml = `
+      <div class="champion-banner">
+        <div class="cup">🏆</div>
+        <h2>${escapeHtml(teamLabel(finalMatch.winnerId))}</h2>
+        <div>Juara Bulu Tangkis Ganda!</div>
+      </div>`;
+  }
+
+  const cols = rounds.map((round, rIdx)=>{
+    const matches = round.map(m=>{
+      const aWin = m.winnerId && m.winnerId===m.aId;
+      const bWin = m.winnerId && m.winnerId===m.bId;
+      if(m.bye){
+        return `<div class="bmatch">
+          <div class="team-line winner">${escapeHtml(teamLabel(m.winnerId))}</div>
+          <div class="divider"></div>
+          <div class="team-line bye">— bye —</div>
+        </div>`;
+      }
+      if(!m.aId || !m.bId){
+        return `<div class="bmatch">
+          <div class="team-line">${escapeHtml(teamLabel(m.aId))}</div>
+          <div class="divider"></div>
+          <div class="team-line">${escapeHtml(teamLabel(m.bId))}</div>
+        </div>`;
+      }
+      if(!m.played){
+        return `<div class="bmatch">
+          <div class="team-line"><span>${escapeHtml(teamLabel(m.aId))}</span><input class="score-input" type="number" min="0" data-role="scoreA"></div>
+          <div class="divider"></div>
+          <div class="team-line"><span>${escapeHtml(teamLabel(m.bId))}</span><input class="score-input" type="number" min="0" data-role="scoreB"></div>
+          <button class="btn small save-btn" data-action="save-score" data-round="${rIdx}" data-match="${m.id}">Simpan Skor</button>
+        </div>`;
+      }
+      return `<div class="bmatch">
+        <div class="team-line ${aWin?'winner':''}"><span>${escapeHtml(teamLabel(m.aId))}</span><span>${m.scoreA}</span></div>
+        <div class="divider"></div>
+        <div class="team-line ${bWin?'winner':''}"><span>${escapeHtml(teamLabel(m.bId))}</span><span>${m.scoreB}</span></div>
+      </div>`;
+    }).join('');
+    return `<div class="round-col"><div class="round-title">${roundLabel(rIdx, rounds.length)}</div>${matches}</div>`;
+  }).join('');
+
+  const editSection = `
+    <div class="card">
+      <h2>Perbaiki Nama Tim</h2>
+      <div class="muted">Salah tulis nama pas di-acak? Perbaiki di sini tanpa perlu acak ulang semua tim.</div>
+      ${state.teams.map(t=>`
+        <div class="edit-name-row">
+          <input type="text" value="${escapeHtml(t.p1)}" data-team="${t.id}" data-slot="p1">
+          <span style="align-self:center;">&amp;</span>
+          <input type="text" value="${escapeHtml(t.p2)}" data-team="${t.id}" data-slot="p2">
+          <button class="btn small ghost" data-action="save-team-name" data-team="${t.id}">Simpan</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  container.innerHTML = championHtml + `<div class="card"><h2>Bracket</h2><div class="bracket-scroll"><div class="bracket">${cols}</div></div></div>` + editSection;
+}
+
+function renderAll(){
+  renderTeamsResult();
+  renderBracket();
+}
+
+/* ============================================================
+   EVENTS
+============================================================ */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await loadAll();
+  renderRoster();
+  renderAll();
+
+  document.getElementById('saveRosterBtn').addEventListener('click', saveRoster);
+  document.getElementById('shuffleBtn').addEventListener('click', shuffleTeamsAndBuildBracket);
+  document.getElementById('resetBracketBtn').addEventListener('click', resetBracket);
+
+  document.addEventListener('click', async (e)=>{
+    const saveScore = e.target.closest('[data-action="save-score"]');
+    if(saveScore){
+      const box = saveScore.closest('.bmatch');
+      const sA = parseInt(box.querySelector('[data-role="scoreA"]').value, 10);
+      const sB = parseInt(box.querySelector('[data-role="scoreB"]').value, 10);
+      if(isNaN(sA) || isNaN(sB)){ alert('Isi kedua skor dulu.'); return; }
+      await saveMatchScore(parseInt(saveScore.dataset.round,10), saveScore.dataset.match, sA, sB);
+      return;
+    }
+    const saveTeamName = e.target.closest('[data-action="save-team-name"]');
+    if(saveTeamName){
+      const teamId = saveTeamName.dataset.team;
+      const p1 = document.querySelector(`input[data-team="${teamId}"][data-slot="p1"]`).value;
+      const p2 = document.querySelector(`input[data-team="${teamId}"][data-slot="p2"]`).value;
+      await renameTeam(teamId, p1, p2);
+      return;
+    }
+  });
+});
+</script>
+</body>
+</html>
